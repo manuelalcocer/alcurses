@@ -98,7 +98,7 @@ class MainMenu(Subwindow):
         return
 
     def AddSel(self, namesel):
-        self.menuelements.append({ 'name' : namesel, 'xpos' : 0, 'ypos' : 0, 'id' : 0})
+        self.menuelements.append({ 'name' : namesel, 'xpos' : 0, 'ypos' : 0})
         menulength = len(self.menuelements)
         pos = 0
         spacing = 3
@@ -108,7 +108,6 @@ class MainMenu(Subwindow):
             else:
                 pos += spacing
             self.menuelements[index]['xpos'] = pos
-            self.menuelements[index]['id'] = index + 1
             pos += len(self.menuelements[index]['name'])
         self.WriteMenu()
         return
@@ -140,16 +139,18 @@ class MainMenu(Subwindow):
 
     def MoveLeft(self):
         self.normalizemenu()
-        self.menupos = (self.menupos + 1) % len(self.menuelements)
-        self.menupos += 1
-        self.chgattribmenu(self.menupos)
+        if self.menupos > 1:
+            self.menupos -= 1
+            self.menupos = self.menupos % (len(self.menuelements)+1)
+        self.chgattribmenu(self.menupos-1)
         return
 
     def MoveRight(self):
         self.normalizemenu()
-        self.menupos = (self.menupos - 1) % len(self.menuelements)
-        self.menupos -= 1
-        self.chgattribmenu(self.menupos)
+        if self.menupos < len(self.menuelements):
+            self.menupos += 1
+            self.menupos = self.menupos % (len(self.menuelements)+1) 
+        self.chgattribmenu(self.menupos-1)
         return
 
     def normalizemenu(self):
@@ -162,9 +163,9 @@ class MainMenu(Subwindow):
         return
 
     def chgattribmenu(self,idelement):
-        ypos = self.menuelements[idelement-1]['ypos']
-        xpos = self.menuelements[idelement-1]['xpos']
-        xlen = len(self.menuelements[idelement-1]['name'])
+        ypos = self.menuelements[idelement]['ypos']
+        xpos = self.menuelements[idelement]['xpos']
+        xlen = len(self.menuelements[idelement]['name'])
         attrib = c.color_pair(8)
         self.win.chgat(ypos,xpos,xlen,attrib)
         return
