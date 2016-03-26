@@ -97,7 +97,7 @@ class MainMenu(Subwindow):
         return
 
     def AddSel(self, namesel):
-        self.menuelements.append({ 'name' : namesel, 'pos' : 0 , 'id' : 0})
+        self.menuelements.append({ 'name' : namesel, 'xpos' : 0, 'ypos' : 0, 'id' : 0})
         menulength = len(self.menuelements)
         pos = 0
         spacing = 3
@@ -106,7 +106,7 @@ class MainMenu(Subwindow):
                 pos += 1
             else:
                 pos += spacing
-            self.menuelements[index]['pos'] = pos
+            self.menuelements[index]['xpos'] = pos
             self.menuelements[index]['id'] = index + 1
             pos += len(self.menuelements[index]['name'])
         self.WriteMenu()
@@ -114,14 +114,15 @@ class MainMenu(Subwindow):
 
     def WriteMenu(self):
         h,w = self.parent.Dims()
-        hmin = self.Dims()[0] + 2 
-        wmin = len(self.menuelements[-1]['name']) + self.menuelements[-1]['pos'] + 2 
+        hmin = self.Dims()[0] + 4 
+        wmin = len(self.menuelements[-1]['name']) + self.menuelements[-1]['xpos'] + 2 
         if h > hmin and w > wmin:
             y = 0
             for element in self.menuelements:
-                x = element['pos']
+                x = element['xpos']
+                y = element['ypos']
                 self.win.addstr(y,x,element['name'])
-            self.win.hline(1,0,c.ACS_HLINE,self.W)
+            self.win.hline(y+1,0,c.ACS_HLINE,self.W)
             self.parent.MainRefresh()
         else:
             exit(0)
@@ -151,6 +152,11 @@ class MainMenu(Subwindow):
         return
 
     def normalizemenu(self):
+        for element in self.menuelements:
+            xpos = element['pos']
+            xlen = len(element['name'])
+            attrib = c.A_NORMAL
+            self.win.chgat()
         return
 
     def chgattribmenu(self):
