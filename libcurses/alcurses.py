@@ -101,22 +101,25 @@ class MainMenu(Subwindow):
         return
 
     def WriteMenu(self):
-        y = 0
-        for element in self.menuelements:
-            x = element['pos']
-            self.win.addstr(y,x,element['name'])
-        self.win.hline(1,0,c.ACS_HLINE,self.W)
-        self.parent.MainRefresh()
+        h,w = self.parent.Dims()
+        hmin = self.Dims()[0] 
+        wmin = len(self.menuelements[-1]['name']) + self.menuelements[-1]['pos'] + 2 
+        if h > 5 and w > wmin:
+            y = 0
+            for element in self.menuelements:
+                x = element['pos']
+                self.win.addstr(y,x,element['name'])
+            self.win.hline(1,0,c.ACS_HLINE,self.W)
+            self.parent.MainRefresh()
+        else:
+            exit(0)
         return
     
     def Redraw(self):
         self.Sweep()
         self.parent.Sweep()
         y,x = self.parent.Dims()
-        if y > 5 and x > 25:
-            c.resize_term(y,x)
-            self.Draw()
-            if len(self.menuelements): self.WriteMenu()
-        else:
-            exit(0)
+        c.resize_term(y,x)
+        self.Draw()
+        self.WriteMenu()
         return
