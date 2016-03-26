@@ -123,6 +123,8 @@ class MainMenu(Subwindow):
                 y = element['ypos']
                 self.win.addstr(y,x,element['name'])
             self.win.hline(y+1,0,c.ACS_HLINE,self.W)
+            self.normalizemenu()
+            self.chgattribmenu()
             self.parent.MainRefresh()
         else:
             exit(0)
@@ -142,7 +144,7 @@ class MainMenu(Subwindow):
         if self.menupos > 1:
             self.menupos -= 1
             self.menupos = self.menupos % (len(self.menuelements)+1)
-        self.chgattribmenu(self.menupos-1)
+        self.chgattribmenu()
         return
 
     def MoveRight(self):
@@ -150,7 +152,7 @@ class MainMenu(Subwindow):
         if self.menupos < len(self.menuelements):
             self.menupos += 1
             self.menupos = self.menupos % (len(self.menuelements)+1) 
-        self.chgattribmenu(self.menupos-1)
+        self.chgattribmenu()
         return
 
     def normalizemenu(self):
@@ -162,10 +164,14 @@ class MainMenu(Subwindow):
             self.win.chgat(ypos,xpos,xlen,attrib)
         return
 
-    def chgattribmenu(self,idelement):
-        ypos = self.menuelements[idelement]['ypos']
-        xpos = self.menuelements[idelement]['xpos']
-        xlen = len(self.menuelements[idelement]['name'])
-        attrib = c.color_pair(8)
-        self.win.chgat(ypos,xpos,xlen,attrib)
+    def chgattribmenu(self):
+        idelement = self.menupos - 1
+        if idelement >= 0:
+            ypos = self.menuelements[idelement]['ypos']
+            xpos = self.menuelements[idelement]['xpos']
+            xlen = len(self.menuelements[idelement]['name'])
+            attrib = c.color_pair(8)
+            self.win.chgat(ypos,xpos,xlen,attrib)
+        else:
+            self.normalizemenu()
         return
