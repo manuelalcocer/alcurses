@@ -58,6 +58,8 @@ class Init(object):
         c.init_pair(4,c.COLOR_WHITE,c.COLOR_BLUE)
         c.init_pair(5,c.COLOR_YELLOW,c.COLOR_BLUE)
         c.init_pair(6,c.COLOR_CYAN,c.COLOR_BLUE)
+        c.init_pair(7,c.COLOR_BLUE,c.COLOR_CYAN)
+        c.init_pair(8,c.COLOR_BLUE,c.COLOR_YELLOW)
         return
 
 class Subwindow(Init):
@@ -73,7 +75,6 @@ class MainMenu(Subwindow):
         self.Changecolor(5)
         self.createvars()
         self.Draw()
-        self.menupos = 0
         return
     
     def Draw(self):
@@ -93,7 +94,7 @@ class MainMenu(Subwindow):
 
     def createvars(self):
         self.menuelements = []
-        self.currentpos = 0
+        self.menupos = 0
         return
 
     def AddSel(self, namesel):
@@ -141,23 +142,29 @@ class MainMenu(Subwindow):
         self.normalizemenu()
         self.menupos = (self.menupos + 1) % len(self.menuelements)
         self.menupos += 1
-        self.chgattribmenu()
+        self.chgattribmenu(self.menupos)
         return
 
     def MoveRight(self):
         self.normalizemenu()
         self.menupos = (self.menupos - 1) % len(self.menuelements)
         self.menupos -= 1
-        self.chgattribmenu()
+        self.chgattribmenu(self.menupos)
         return
 
     def normalizemenu(self):
         for element in self.menuelements:
-            xpos = element['pos']
+            xpos = element['xpos']
+            ypos = element['ypos']
             xlen = len(element['name'])
-            attrib = c.A_NORMAL
-            self.win.chgat()
+            attrib = c.color_pair(5)
+            self.win.chgat(ypos,xpos,xlen,attrib)
         return
 
-    def chgattribmenu(self):
+    def chgattribmenu(self,idelement):
+        ypos = self.menuelements[idelement-1]['ypos']
+        xpos = self.menuelements[idelement-1]['xpos']
+        xlen = len(self.menuelements[idelement-1]['name'])
+        attrib = c.color_pair(8)
+        self.win.chgat(ypos,xpos,xlen,attrib)
         return
