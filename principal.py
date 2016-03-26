@@ -32,7 +32,6 @@ def Main():
     with clib.Init() as Mainwindow:      
         Menu = createMenu(Mainwindow)
         createSelections(Menu)
-        Menu.Refresh()
         WaitAction(Menu)
 
 if __name__ == '__main__':

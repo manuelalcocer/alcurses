@@ -22,6 +22,12 @@ class Init(object):
     def Refresh(self):
         self.win.refresh()
         return
+    
+    def MainRefresh(self):
+        self.win.border(0)
+        self.win.noutrefresh()
+        c.doupdate()
+        return
 
     def Sweep(self):
         self.win.move(0,0)
@@ -38,11 +44,12 @@ class Init(object):
         self.Changecolor(6) 
         return self
 
-    def __exit__(self, type, value, traceback):
+    def __exit__(self, errtype, value, traceback):
         c.nocbreak()
         self.win.keypad(0)
         c.echo()
         c.endwin()
+        return
     
     def CreatePairs(self):
         c.init_pair(1,c.COLOR_WHITE,-1)
@@ -51,6 +58,7 @@ class Init(object):
         c.init_pair(4,c.COLOR_WHITE,c.COLOR_BLUE)
         c.init_pair(5,c.COLOR_YELLOW,c.COLOR_BLUE)
         c.init_pair(6,c.COLOR_CYAN,c.COLOR_BLUE)
+        return
 
 class Subwindow(Init):
     def __init__(self,parent,y=0,x=0):
@@ -98,15 +106,17 @@ class MainMenu(Subwindow):
             x = element['pos']
             self.win.addstr(y,x,element['name'])
         self.win.hline(1,0,c.ACS_HLINE,self.W)
+        self.parent.MainRefresh()
         return
     
     def Redraw(self):
         self.Sweep()
         self.parent.Sweep()
-        self.parent.win.border(0)
-        self.parent.Refresh()
         y,x = self.parent.Dims()
-        c.resize_term(y,x)
-        self.Draw()
-        if len(self.menuelements): self.WriteMenu()
+        if y > 5 and x > 25:
+            c.resize_term(y,x)
+            self.Draw()
+            if len(self.menuelements): self.WriteMenu()
+        else:
+            exit(0)
         return
