@@ -123,8 +123,7 @@ class MainMenu(Subwindow):
                 y = element['ypos']
                 self.win.addstr(y,x,element['name'])
             self.win.hline(y+1,0,c.ACS_HLINE,self.W)
-            self.normalizemenu()
-            self.chgattribmenu()
+            self.UpdateMenuSelection(None)
             self.parent.MainRefresh()
         else:
             exit(0)
@@ -134,44 +133,29 @@ class MainMenu(Subwindow):
         if key == c.KEY_F10 or key == 27:
             return 'exit'
         elif key == c.KEY_LEFT:
-            self.MoveLeft()
+            self.UpdateMenuSelection('left')
         elif key == c.KEY_RIGHT:
-            self.MoveRight()
+            self.UpdateMenuSelection('right')
         return
 
-    def MoveLeft(self):
-        self.normalizemenu()
-        if self.menupos > 1:
+    def GetMenuPos(self):
+        self.id = self.menupos - 1
+        self.ypos = self.menuelements[self.id]['ypos']
+        self.xpos = self.menuelements[self.id]['xpos']
+        self.xlen = len(self.menuelements[self.id]['name'])
+        return
+        
+    def UpdateMenuSelection(self,direction):
+        self.GetMenuPos()
+        attrib = c.color_pair(5)
+        self.win.chgat(self.ypos,self.xpos,self.xlen,attrib)
+        if self.menupos > 1 and direction == 'left':
             self.menupos -= 1
-            self.menupos = self.menupos % (len(self.menuelements)+1)
-        self.chgattribmenu()
-        return
-
-    def MoveRight(self):
-        self.normalizemenu()
-        if self.menupos < len(self.menuelements):
+        elif self.menupos < len(self.menuelements) and direction == 'right':
             self.menupos += 1
-            self.menupos = self.menupos % (len(self.menuelements)+1) 
-        self.chgattribmenu()
-        return
-
-    def normalizemenu(self):
-        for element in self.menuelements:
-            xpos = element['xpos']
-            ypos = element['ypos']
-            xlen = len(element['name'])
-            attrib = c.color_pair(5)
-            self.win.chgat(ypos,xpos,xlen,attrib)
-        return
-
-    def chgattribmenu(self):
-        idelement = self.menupos - 1
-        if idelement >= 0:
-            ypos = self.menuelements[idelement]['ypos']
-            xpos = self.menuelements[idelement]['xpos']
-            xlen = len(self.menuelements[idelement]['name'])
-            attrib = c.color_pair(8)
-            self.win.chgat(ypos,xpos,xlen,attrib)
-        else:
-            self.normalizemenu()
+        elif direction == None:
+            return
+        self.GetMenuPos()
+        attrib = c.color_pair(8)
+        self.win.chgat(self.ypos,self.xpos,self.xlen,attrib)
         return
