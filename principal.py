@@ -11,9 +11,9 @@ def createMenu(window):
     return menuwin
 
 def createSelections(menu):
-    menu.AddSel('Fichero')
-    menu.AddSel('Opciones')
-    menu.AddSel('Salir')
+    menuoptions = ['Fichero','Edicion','Opciones','Herramientas','Salir']
+    for option in menuoptions:
+        menu.AddSel(option)
     return
 
 def WaitAction(w):
