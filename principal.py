@@ -1,7 +1,6 @@
 #!/usr/bin/env python2
 # -*- coding: utf-8 -*-
 
-from curses import ascii
 import curses
 import libcurses.alcurses as clib
 from os import environ
@@ -18,12 +17,13 @@ def createSelections(menu):
     return
 
 def WaitAction(w):
-    keypressed = ''
+    action = ''
     try:
-        while keypressed != ascii.ESC:
+        while action != 'exit':
             keypressed = w.win.getch()
             if curses.KEY_RESIZE:
                 w.Redraw()
+            action = w.Action(keypressed)
     except KeyboardInterrupt:
         pass
     return
